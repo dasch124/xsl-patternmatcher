@@ -95,12 +95,6 @@
         <xsl:value-of select="replace(., '\$match', $value-out)"/>
     </xsl:template>
     
-    <!--<xsl:template match="@*[matches(.,'group:\d+')]" mode="populate-pattern">
-        <xsl:param name="match" tunnel="yes"/>
-        <xsl:attribute name="{name(.)}">
-            <xsl:value-of select="replace(., '\$match', $match)"/>
-        </xsl:attribute>
-    </xsl:template>-->
     
     <xsl:template match="@*[matches(.,'group:\d+')]" mode="populate-pattern">
         <xsl:param name="pattern" as="element(p:pattern)*" tunnel="yes"/>
@@ -127,10 +121,20 @@
     </xsl:template>
     
     <xsl:template match="text()[matches(.,'group:\d+')]" mode="populate-pattern">
+        <xsl:param name="pattern" as="element(p:pattern)*" tunnel="yes"/>
         <xsl:param name="regex-group-values" as="element(p:regex-group)*" tunnel="yes"/>
         <xsl:analyze-string select="." regex="group:(\d+)">
             <xsl:matching-substring>
-                <xsl:sequence select="xs:integer(regex-group(1))"/>
+                <xsl:variable name="group-num" select="regex-group(1)"/>
+                <xsl:variable name="group-config" select="$pattern/p:group[@n = $group-num]" as="element()?"/>
+                <xsl:variable name="group-value-in" select="$regex-group-values[@n = $group-num]/node()"/>
+                <xsl:variable name="group-value-out">
+                    <xsl:call-template name="transform-value">
+                        <xsl:with-param name="value" select="$group-value-in"/>
+                        <xsl:with-param name="transforms" select="$group-config/p:transform" as="item()*"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <xsl:sequence select="$group-value-out"/>
             </xsl:matching-substring>
             <xsl:non-matching-substring>
                 <xsl:value-of select="."/>
