@@ -27,6 +27,15 @@
             </p:match>
             <p:out>$match</p:out>
         </p:pattern>
+        <p:pattern match=".(eute)" name="ist">
+            <p:group n="1">
+                <p:transform function="upper-case"/>
+            </p:group>
+            <p:match>
+                <p:transform function="lower-case"/>
+            </p:match>
+            <p:out><choice><sic>$match</sic><corr>Lgroup:1</corr></choice></p:out>
+        </p:pattern>
     </xsl:param>
     
     <xsl:template match="/">
