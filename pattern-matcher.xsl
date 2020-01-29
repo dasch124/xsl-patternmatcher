@@ -78,9 +78,9 @@
         </xsl:copy>
     </xsl:template>
     
-    <xsl:template match="p:pattern/p:*|p:pattern/text()" mode="populate-pattern"/>
+    <xsl:template match="p:pattern/text()" mode="populate-pattern"/>
     <xsl:template match="p:pattern" mode="populate-pattern">
-        <xsl:apply-templates select="node()" mode="#current"/>
+        <xsl:apply-templates select="p:out/node()" mode="#current"/>
     </xsl:template>
     
     <xsl:template match="text()[matches(.,'\$match')]" mode="populate-pattern">
